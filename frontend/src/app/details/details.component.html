@@ -1,0 +1,77 @@
+<div class="container">
+    <h3 class="heading">Family Details</h3>
+
+    <form id="personDetails" (ngSubmit)="onSubmit(f)" #f="ngForm">
+
+        <mat-form-field >
+            <mat-label>Name</mat-label>
+            <input type="text" name="name" [(ngModel)]="formData.name" matInput placeholder="ex. Grandfather" required autofocus>
+            <mat-error >Name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>spouse</mat-label>
+            <input type="text" name="spouse" [(ngModel)]="formData.spouse" matInput placeholder="ex. Judy" required>
+            <mat-error>Spouse name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Location</mat-label>
+            <input type="text" name="location" [(ngModel)]="formData.location" matInput placeholder="ex. Kolkata" required>
+            <mat-error>Location is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Birth Date</mat-label>
+            <input type="text" name="dob" [(ngModel)]="formData.dob" matInput 
+                [matDatepicker]="picker" required>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker [xPosition]="'end'" #picker></mat-datepicker>
+            <mat-error>Birth Date is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Address</mat-label>
+            <input type="text" name="address" [(ngModel)]="formData.address" matInput placeholder="ex. street, area, state, country." required>
+            <mat-error>Address is required</mat-error>
+        </mat-form-field>
+
+        <div class="photos">
+            <div class="files">
+
+                <img [src]="imgURL1 || '../../assets/male.jpg'" width="200px" height="200px" alt="male">
+                <img [src]="imgURL2 || '../../assets/female.jpg'" width="200px" height="200px" alt="female">
+            </div>
+
+            <div class="fileUpload">
+                <div class="input">
+                    <input type="file" name="person-1" id="person-1" accept="image/*" 
+                (change)="onFileUploadChange($event, 1)" #person1 required>
+
+                </div>
+                <div class="fileInput">
+                    <p  [ngClass]="{'invalid1': fileError && !fileName1}">{{fileName1 || 'No File Uploaded yet'}}</p>
+                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person1.click()"> 
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                </div>
+                <div class="input">
+                    <input type="file" name="person-2" id="person-2" accept="image/*"
+                (change)="onFileUploadChange($event, 2)" #person2 required>
+                </div>
+                <div class="fileInput">
+                    <p [ngClass]="{'invalid2': fileError && !fileName2}">{{fileName2 || 'No File Uploaded yet'}}</p>
+                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person2.click()"> 
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                </div>              
+            </div>
+        </div>
+
+    </form>
+    <div class="buttons">
+        <button mat-raised-button type="submit" color="primary" form="personDetails">Add to Family</button>
+        <button mat-raised-button type="button" color="primary">Print Family Tree</button>
+    </div>
+</div>

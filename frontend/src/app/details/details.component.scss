@@ -1,0 +1,74 @@
+.container {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px 30px;
+    border-radius: 50px;
+    margin: 10px;
+    border: 1px solid rgb(39, 39, 39);
+}
+
+.container .personDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.container .mat-form-field,
+.buttons,
+form {
+    width: 100%;
+}
+
+.container .buttons {
+    display: flex;
+    justify-content: space-evenly;
+
+    button {
+        margin-top: 8px;
+        width: 20%;
+    }
+}
+
+.container .photos {
+    display: flex;
+    flex-direction: column;
+
+    img{
+        object-fit: contain;
+    }
+
+    .files,
+    .fileUpload {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .fileUpload {
+        margin: 10px 0;
+        .input {
+            display: none;
+        }
+
+        .fileInput {
+            display: flex;
+            align-items: center;
+            
+            p{
+                margin: 0;
+            }
+            .invalid1, .invalid2{
+                color: red;
+            }
+        }
+
+        mat-icon {
+            height: 20px;
+            font-size: 20px;
+            width: 20px;
+        }
+        button {
+            margin-left: 20px;
+        }
+    }
+}
