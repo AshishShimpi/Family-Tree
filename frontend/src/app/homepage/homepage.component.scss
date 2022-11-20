@@ -1,0 +1,25 @@
+    
+.container{
+    background-color: rebeccapurple;
+}
+    @media screen and (max-width: 768px) {
+        .container{
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .tree, .details{width: 100%;}
+    }
+    @media screen and (min-width: 767px ){
+        .container{
+            display: flex;
+            height: 100%;
+
+        } 
+        .tree{
+            width: 40%;
+        }
+        .details{
+            width: 60%;
+        }
+    }

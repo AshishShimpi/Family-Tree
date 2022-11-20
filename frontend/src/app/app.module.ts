@@ -12,12 +12,17 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TreeComponent } from './tree/tree.component';
+import {MatTreeModule} from '@angular/material/tree';
+import { HomepageComponent } from './homepage/homepage.component';
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        DetailsComponent
+        DetailsComponent,
+        TreeComponent,
+        HomepageComponent
     ],
     imports: [
         BrowserModule,
@@ -30,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
         MatDatepickerModule,
         MatButtonModule,
         MatIconModule,
+        MatTreeModule,
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }

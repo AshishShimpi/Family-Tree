@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { form } from '../models/form.model';
+import { MatInput } from '@angular/material/input';
+import { person } from '../models/person.model';
 
 @Component({
     selector: 'app-details',
@@ -8,13 +9,21 @@ import { form } from '../models/form.model';
     styleUrls: ['./details.component.scss']
 })
 export class DetailsComponent implements OnInit {
-
+    
+    @ViewChild('f') form!:NgForm;
     constructor() { }
+
+    private _details:any;
 
     imgURL1?: string;
     imgURL2?: string;
-
-    formData: form = {
+    disableAddButton: boolean = true;
+    disableFields:boolean = true;
+    formData : any = {
+        accountId : null,
+        id : null,
+        level : null,
+        parent : null,
         name: '',
         spouse: '',
         location: '',
@@ -27,16 +36,32 @@ export class DetailsComponent implements OnInit {
     fileName1?: string;
     fileName2?: string;
 
+    @Input() 
+    set details(details:any){
+        this._details = details;
+        console.log(details);
+        this.disableFields = true;
+        this.setFormData();
+    }
+
+    get details():any{ return this._details}
+
     ngOnInit(): void {
     }
 
+    setFormData(){
+        this.formData.accountId = this._details.accountId;
+        this.formData.id = this._details.id;
+        this.formData.level = this._details.level;
+        this.formData.name = this._details.name;
+    }
 
     onFileUploadChange(event: any, person: number) {
         this.fileError = false;
         const file: File = event.target.files[0];
 
         if (file.type && !file.type.startsWith('image/')) {
-            console.log('not supported file type');
+            // console.log('not supported file type');
             if (person === 1) {
                 [this.fileName1, this.formData.image1] = [undefined, undefined];
                 this.imgURL1 = undefined;
@@ -81,7 +106,16 @@ export class DetailsComponent implements OnInit {
         }
         else {
             console.log(form, this.formData);
+            form.reset();
+            this.disableAddButton = true
         }
     }
 
+    resetForm(){
+        this.form.reset();
+        console.log(this.form);
+        
+        this.disableAddButton = false;
+        this.disableFields = false;
+    }
 }
