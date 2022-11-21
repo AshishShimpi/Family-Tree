@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { person } from '../models/person.model';
@@ -11,6 +11,7 @@ import { person } from '../models/person.model';
 export class DetailsComponent implements OnInit {
     
     @ViewChild('f') form!:NgForm;
+
     constructor() { }
 
     private _details:any;
@@ -19,10 +20,10 @@ export class DetailsComponent implements OnInit {
     imgURL2?: string;
     disableAddButton: boolean = true;
     disableFields:boolean = true;
-    formData : any = {
-        accountId : null,
-        id : null,
-        level : null,
+    formData : person = {
+        accountId : -1,
+        id : '',
+        level : -1,
         parent : null,
         name: '',
         spouse: '',
@@ -35,25 +36,43 @@ export class DetailsComponent implements OnInit {
     fileError: boolean = false;
     fileName1?: string;
     fileName2?: string;
-
+    @Output() newPersonData = new EventEmitter<person>();
     @Input() 
-    set details(details:any){
+    set details(details:person){
+        if(typeof(details) !== 'string'){
         this._details = details;
-        console.log(details);
+        // console.log(details);
         this.disableFields = true;
-        this.setFormData();
+        this.disableAddButton = true;
+        this.setDataFromTree();
+        }
     }
 
-    get details():any{ return this._details}
+    get details():any{ return this._details;}
 
     ngOnInit(): void {
     }
 
-    setFormData(){
-        this.formData.accountId = this._details.accountId;
-        this.formData.id = this._details.id;
-        this.formData.level = this._details.level;
+    setDataFromTree(){
         this.formData.name = this._details.name;
+        this.formData.spouse = this._details.spouse;
+        this.formData.location = this._details.location;
+        this.formData.dob = this._details.dob;
+        this.formData.address = this._details.address;
+        this.formData.image1 = this._details.image1;
+        this.formData.image2 = this._details.image2;
+    }
+
+    setDataFromNewPerson(){
+        this.formData.accountId = this._details.accountId;
+        this.formData.id = this._details.id + 'A';
+        this.formData.level = this._details.level + 1;
+        this.formData.parent = this._details.id;
+        
+        const data = JSON.parse(JSON.stringify(this.formData));
+        console.log(data.parent);
+        console.log(data);
+        this.sendNewPersonData(data);
     }
 
     onFileUploadChange(event: any, person: number) {
@@ -94,20 +113,25 @@ export class DetailsComponent implements OnInit {
 
 
     onSubmit(form: NgForm) {
-        if (!this.fileName1 || !this.fileName2) {
-            this.fileError = true;
-        }
-        else if (this.fileName1 === this.fileName2) {
-            console.log('files cannot be same');
+        // if (!this.fileName1 || !this.fileName2) {
+        //     this.fileError = true;
+        // }
+        // else if (this.fileName1 === this.fileName2) {
+        //     console.log('files cannot be same');
 
-        }
-        else if (!form.valid) {
-            console.log('form not valid');
+        // }
+        // else 
+        if (!form.valid) {
+            console.log('form not valid',form);
         }
         else {
-            console.log(form, this.formData);
-            form.reset();
-            this.disableAddButton = true
+            this.imgURL1 = undefined;
+            this.imgURL2 = undefined;
+            this.fileName1 = undefined;
+            this.fileName2 = undefined;
+            this.disableAddButton = true;
+            this.disableFields = true;
+            this.setDataFromNewPerson();
         }
     }
 
@@ -117,5 +141,13 @@ export class DetailsComponent implements OnInit {
         
         this.disableAddButton = false;
         this.disableFields = false;
+    }
+
+    sendNewPersonData(data:any){
+        console.log('emitting');
+        
+        this.newPersonData.emit(data);
+        this.form.reset();
+        // this.setDataFromTree();   
     }
 }

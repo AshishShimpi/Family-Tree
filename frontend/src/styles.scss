@@ -46,3 +46,21 @@ body {
 .mat-form-field-appearance-outline .mat-form-field-wrapper {
     margin: 0.6em 0 !important;
 }
+
+
+.mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-outline {
+    color: rgb(0 0 0 / 20%);
+}
+
+.mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-label {
+    color: rgb(0 0 0 / 20%);
+}
+
+.mat-form-field-label {
+    color: rgb(0 0 0 / 80%);
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: rgb(0 0 0 / 80%);
+}
+

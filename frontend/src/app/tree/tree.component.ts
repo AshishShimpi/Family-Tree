@@ -1,11 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { person } from '../models/person.model';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 interface TreeNode {
     name: string,
-    id: string,
+    id: string | null,
     parent: string | null,
     children: TreeNode[],
 
@@ -17,13 +17,30 @@ interface TreeNode {
     styleUrls: ['./tree.component.scss']
 })
 export class TreeComponent implements OnInit {
-    @Output() details = new EventEmitter();
-    treeControl = new NestedTreeControl<TreeNode>(node => node.children);
-    dataSource = new MatTreeNestedDataSource<TreeNode>();
 
+    @Output() details = new EventEmitter();
+    treeControl: NestedTreeControl<TreeNode>;
+    dataSource: MatTreeNestedDataSource<TreeNode>;
+
+    @Input()
+    set inputPersonData(data: any) {
+        if (data && data.person) {
+            this._inputPersonData = data.person;
+            this.dummyTreeData.push(...this._inputPersonData);
+            console.log(this._inputPersonData);
+            this.prepareTree();
+        }
+    }
+    get inputPersonData() {
+        return this._inputPersonData;
+    }
 
     constructor() {
+        this.treeControl = new NestedTreeControl<TreeNode>(node => node.children);
+        this.dataSource = new MatTreeNestedDataSource<TreeNode>();
     }
+
+    private _inputPersonData: any;
     disableToggle: boolean = false;
     selectedPerson: string = '';
     dummyTreeData: person[] = [
@@ -33,40 +50,68 @@ export class TreeComponent implements OnInit {
             level: 1,
             parent: null,
             name: 'Great grandpa',
+            spouse: 'Great grandMa',
+            location: 'india',
+            dob: '',
+            address: 'maharashtra',
+            image1: undefined,
+            image2: undefined
         }, {
             accountId: 123,
             id: '1A',
             level: 2,
             parent: '0A',
             name: 'Daughter 1',
+            spouse: 'dau in law',
+            location: 'daughter country',
+            dob: '',
+            address: 'daughter city',
+            image1: undefined,
+            image2: undefined
         }, {
             accountId: 123,
             id: '2A',
             level: 2,
             parent: '0A',
             name: 'Son 1',
+            spouse: 'son in law',
+            location: 'son country',
+            dob: '',
+            address: 'son city',
+            image1: undefined,
+            image2: undefined
         }, {
             accountId: 123,
             id: '3A',
             level: 3,
             parent: '2A',
             name: 'Daughter 11',
+            spouse: '11 dau in law',
+            location: '11 daughter country',
+            dob: '',
+            address: '11 daughter city',
+            image1: undefined,
+            image2: undefined
         }, {
             accountId: 123,
             id: '4A',
             level: 3,
             parent: '1A',
             name: 'Son 11',
+            spouse: '11 son in law',
+            location: '11 son country',
+            dob: '',
+            address: '11 son city',
+            image1: undefined,
+            image2: undefined
         },
     ]
 
     treeData: TreeNode[] = [];
 
     ngOnInit(): void {
-        setTimeout(() => {
-            this.prepareTree();
-        }, 200);
 
+        this.prepareTree();
     }
 
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
@@ -85,6 +130,7 @@ export class TreeComponent implements OnInit {
                 children: []
             }
         });
+        // console.log(this.dummyTreeData);
 
         this.renderTreeData();
     }
@@ -103,28 +149,24 @@ export class TreeComponent implements OnInit {
         let parentI = this.treeData.findIndex((person) => {
             return person.parent === null;
         });
-        // console.log(this.treeData[parentI]);
-        // console.log('main clicking');
 
         this.dataSource.data = [this.treeData[parentI]];
-        this.treeControl.expansionModel.setSelection(this.treeData[parentI]);
+        
+            this.treeControl.expansionModel.setSelection(...this.treeData);
         this.track(this.treeData[parentI]);
     }
 
 
     track(data?: any) {
 
-        // console.log('clicked', typeof (data), data);
         console.log(this.treeControl);
-        
+
         this.selectedPerson = data?.id;
         let parentI = this.dummyTreeData.findIndex((person) => {
             return data.id === person.id;
         });
+
         this.details.emit(this.dummyTreeData[parentI]);
-    }
-    trackTree(index: number, item: any) {
-        return item.name;
     }
 
 }

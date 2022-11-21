@@ -1,14 +1,14 @@
 export interface person {
-    accountId: number ,
-    id : string  ,
-    level: number ,
+    accountId: number | null,
+    id: string | null,
+    level: number,
+    name: string;
+    spouse: string,
+    location: string,
+    dob: string,
+    address: string,
     parent: string | null,
-    name:string;
-    // spouse: string,
-    // location: string,
-    // dob: string,
-    // address: string,
-    // image1?: File,
-    // image2?: File,
+    image1?: File,
+    image2?: File,
 
 }
