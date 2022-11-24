@@ -12,7 +12,7 @@ export class HomepageComponent implements OnInit {
 
     }
     inputPersonData: any = null;
-    details: any = 'empty';
+    details: any = null;
     
     ngOnInit(): void {
         // setTimeout(()=>{
@@ -32,12 +32,13 @@ export class HomepageComponent implements OnInit {
         // },3000);
     }
 
-    setDetails(details: person) {
-        // console.log('from tree to home', details);
-        this.details = details;
+    setDetails(data: person) {
+        this.details = null;
+        this.details = data;
     }
     setTree(person:any){
-        this.inputPersonData = {person : [person]};
+        this.inputPersonData = null;
+        this.inputPersonData = person;
     }
 
 }

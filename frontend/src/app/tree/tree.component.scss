@@ -49,7 +49,7 @@
    * Leaf nodes need to have padding so as to align with other non-leaf nodes
    * under the same parent.
    */
-.example-tree div[role=group]>.mat-tree-node {
+.example-tree div[role=group]>.mat-tree-node, mat-tree-node {
     padding-left: 20px;
 }
 .mat-tree {
@@ -76,5 +76,15 @@
 
 .mat-icon-button{
     width: 32px;
+    margin:0 2px;
+}
+
+.mat-icon-button:hover{
+    background-color: hwb(28deg 60% 0% / 52%);
+}
+
+mat-nested-tree-node button{
+    position: relative;
+    z-index: 1000;
 }
 

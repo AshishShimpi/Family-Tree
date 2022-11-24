@@ -11,9 +11,8 @@
         </mat-tree-node>
 
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-            <div class="mat-tree-node" (click)="track(node)" [ngClass]="{'selected': selectedPerson === node.id}"
-                matTreeNodeToggle [matTreeNodeToggleRecursive]="true">
-                <button mat-icon-button>
+            <div class="mat-tree-node" (click)="track(node)" [ngClass]="{'selected': selectedPerson === node.id}" >
+                <button mat-icon-button matTreeNodeToggle [matTreeNodeToggleRecursive]="true">
                     <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
