@@ -6,7 +6,10 @@
     align-items: center;
     flex-direction: column;
     padding: 20px 30px;
-    border-radius: 16px;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
     margin: 10px;
     border: 1px solid rgb(39, 39, 39);
     background-color: beige;
@@ -24,8 +27,13 @@
         align-items: center;
         margin-bottom: 10px;
 
+        button {
+            background-color: beige;
+        }
+
         mat-icon {
             margin-left: 10px;
+            margin-top: -3px;
         }
     }
 }
@@ -74,6 +82,8 @@
 
         button {
             margin-left: 20px;
+            background: sandybrown;
+            color: black;
         }
     }
 }
@@ -91,10 +101,16 @@ form {
     button {
         margin-top: 8px;
         width: 149px;
+        color: black;
+        background: sandybrown;
     }
 }
 
-h1,h2,h3,h4,h5,h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 0;
 }
-

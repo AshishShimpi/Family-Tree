@@ -1,7 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { person } from '../models/person.model';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { Store } from '@ngrx/store';
+import { selectAllPersons } from '../state/family/family.selectors';
+import { AppState } from '../state/app.state';
 
 interface TreeNode {
     name: string,
@@ -16,119 +19,59 @@ interface TreeNode {
     templateUrl: './tree.component.html',
     styleUrls: ['./tree.component.scss']
 })
-export class TreeComponent implements OnInit, AfterViewInit {
+export class TreeComponent implements OnInit {
 
     @Output() details = new EventEmitter<person>(true);
     treeControl: NestedTreeControl<TreeNode>;
     dataSource: MatTreeNestedDataSource<TreeNode>;
 
-    @Input()
-    set inputPersonData(data: person) {
 
-        if (data) {
-            this._inputPersonData = data;
-            this.dummyTreeData.push(this._inputPersonData);
-            this.prepareTree();
-            this.expandTree();
-        }
-    }
-    get inputPersonData() {
-        return this._inputPersonData;
-    }
-
-    constructor() {
+    constructor(private store: Store<AppState>) {
         this.treeControl = new NestedTreeControl<TreeNode>(node => node.children);
         this.dataSource = new MatTreeNestedDataSource<TreeNode>();
     }
 
-    private _inputPersonData: any;
+
     disableToggle: boolean = false;
     selectedPerson: string = '';
-    dummyTreeData: person[] = [];
-    // dummyTreeData: person[] = [
-    //     {
-    //         accountId: 123,
-    //         id: '0A',
-    //         level: 1,
-    //         parent: null,
-    //         name: 'Great grandpa',
-    //         spouse: 'Great grandMa',
-    //         location: 'india',
-    //         dob: '',
-    //         address: 'maharashtra',
-    //         image1: undefined,
-    //         image2: undefined
-    //     }, {
-    //         accountId: 123,
-    //         id: '1A',
-    //         level: 2,
-    //         parent: '0A',
-    //         name: 'Daughter 1',
-    //         spouse: 'dau in law',
-    //         location: 'daughter country',
-    //         dob: '',
-    //         address: 'daughter city',
-    //         image1: undefined,
-    //         image2: undefined
-    //     }, {
-    //         accountId: 123,
-    //         id: '2A',
-    //         level: 2,
-    //         parent: '0A',
-    //         name: 'Son 1',
-    //         spouse: 'son in law',
-    //         location: 'son country',
-    //         dob: '',
-    //         address: 'son city',
-    //         image1: undefined,
-    //         image2: undefined
-    //     }, {
-    //         accountId: 123,
-    //         id: '3A',
-    //         level: 3,
-    //         parent: '2A',
-    //         name: 'Daughter 11',
-    //         spouse: '11 dau in law',
-    //         location: '11 daughter country',
-    //         dob: '',
-    //         address: '11 daughter city',
-    //         image1: undefined,
-    //         image2: undefined
-    //     }, {
-    //         accountId: 123,
-    //         id: '4A',
-    //         level: 3,
-    //         parent: '1A',
-    //         name: 'Son 11',
-    //         spouse: '11 son in law',
-    //         location: '11 son country',
-    //         dob: '',
-    //         address: '11 son city',
-    //         image1: undefined,
-    //         image2: undefined
-    //     },
-    // ]
+    familyData: person[] = [];
 
     treeData: TreeNode[] = [];
 
     ngOnInit(): void {
-        if (this.dummyTreeData) {
-            this.prepareTree();
-        }
+        this.getFamilyTree();
+        // this.store.dispatch(loadFamily());
     }
 
-    ngAfterViewInit() {
-        this.expandTree();
-    }
+    // ngAfterViewInit() {
+        // this.expandTree();
+    // }
 
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
+    getFamilyTree() {
+        this.store.select(selectAllPersons).subscribe({
+            next: (res) => {
+                if(res.length){
+                    this.familyData = [...res];
+                    this.prepareTree();
+                    setTimeout(() => {
+                        this.expandTree();
+                    }, 100);
+                }
+
+            },
+            error: (err) => {
+                console.log('Error in tree comp-getAllData\n', err);
+            }
+        })
+    }
 
     prepareTree() {
 
-        this.dummyTreeData.sort((a, b) => b.level - a.level);
+        this.familyData.sort((a, b) => b.level - a.level);
         this.treeData = [];
-        this.treeData = this.dummyTreeData.map((personFromQuery) => {
+        this.treeData = this.familyData.map((personFromQuery) => {
 
             return {
                 name: personFromQuery.name,
@@ -168,13 +111,14 @@ export class TreeComponent implements OnInit, AfterViewInit {
 
 
     track(data?: any) {
-
-        this.selectedPerson = data?.id;
-        let parentI = this.dummyTreeData.findIndex((person) => {
-            return data.id === person.id;
-        });
-        // deep clone to change object reference as angular won't allow same object as input in component
-        this.details.emit(Object.assign({},this.dummyTreeData[parentI]));
+        if(data){
+            this.selectedPerson = data?.id;
+            let parentI = this.familyData.findIndex((person) => {
+                return data.id === person.id;
+            });
+            // deep clone to change object reference as angular won't allow same object as input in component
+            this.details.emit(Object.assign({}, this.familyData[parentI]));
+        }
     }
 
     expandTree() {

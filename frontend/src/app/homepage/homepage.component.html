@@ -1,9 +1,9 @@
 
 <div class="container">
     <div class="tree" >
-        <app-tree [inputPersonData]="inputPersonData" (details)="setDetails($event)"></app-tree>
+        <app-tree  (details)="setDetails($event)"></app-tree>
     </div>
     <div class="details">
-        <app-details [details]="details" (newPersonData)="setTree($event)" ></app-details>
+        <app-details [details]="details"></app-details>
     </div>
 </div>

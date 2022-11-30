@@ -1,10 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { person } from '../models/person.model';
 import { faker } from '@faker-js/faker';
 import { Observable } from 'rxjs';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import { Store } from '@ngrx/store';
+import { addPerson } from '../state/family/family.actions';
+import { AppState } from '../state/app.state';
 
 @Component({
     selector: 'app-details',
@@ -13,10 +16,13 @@ import { DialogComponent } from '../dialog/dialog.component';
 })
 export class DetailsComponent implements OnInit {
 
-    @Output() newPersonData = new EventEmitter<person>(true);
+
     @ViewChild('f') form!: NgForm;
 
-    constructor(public dialog: MatDialog) { }
+    constructor(
+        public dialog: MatDialog,
+        private store: Store<AppState>,
+    ) { }
 
     private _details: any = {};
 
@@ -100,7 +106,7 @@ export class DetailsComponent implements OnInit {
             }
 
         } else if (file) {
-            
+
             if (person === 1) {
                 this.fileName1 = file.name;
                 this.formData.image1 = file;
@@ -126,21 +132,24 @@ export class DetailsComponent implements OnInit {
     onSubmit(form: NgForm) {
         if (!this.fileName1 || !this.fileName2) {
             this.fileError = true;
-            this.dialog.open(DialogComponent,{
-                data: {message:'Please upload file/s'}
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Please upload file/s' }
             });
         }
         else if (this.fileName1 === this.fileName2) {
             console.log('files cannot be same');
-            this.dialog.open(DialogComponent,{
-                data: {message:'Files cannot be same'}
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Files cannot be same' }
             });
 
         }
         else if (!form.valid) {
             console.log('form not valid', form);
-            this.dialog.open(DialogComponent,{
-                data: {message:'Fields cannot be empty'}
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Fields cannot be empty' }
             });
         }
         else {
@@ -160,15 +169,16 @@ export class DetailsComponent implements OnInit {
         this.formData.level = this._details.level !== undefined ? (this._details.level + 1) : 0;
         this.formData.parent = this._details.id ? this._details.id : null;
         // deep clone to change object reference as shallow copy changes with original data mutation & angular won't allow same object as input in component
-        const data = Object.assign({}, this.formData)
-        
+        const data = Object.assign({}, this.formData);
+
         this.sendNewPersonData(data);
     }
 
     sendNewPersonData(data: any) {
         this.form.resetForm();
         this._details = null;
-        this.newPersonData.emit(data);
+        // this.newPersonData.emit(data);
+        this.store.dispatch(addPerson({ person: data }));
 
     }
 

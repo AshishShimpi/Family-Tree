@@ -15,21 +15,6 @@ export class HomepageComponent implements OnInit {
     details: any = null;
     
     ngOnInit(): void {
-        // setTimeout(()=>{
-        //     this.inputPersonData ={ person: [{
-        //         accountId: 123,
-        //         id: '5A',
-        //         level: 2,
-        //         parent: '0A',
-        //         name: '3rd Child',
-        //     },{
-        //         accountId: 123,
-        //         id: '6A',
-        //         level: 2,
-        //         parent: '5A',
-        //         name: '3 2nd Child',
-        //     }]}
-        // },3000);
     }
 
     setDetails(data: person) {

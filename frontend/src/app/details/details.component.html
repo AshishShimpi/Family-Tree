@@ -58,7 +58,7 @@
                 </div>
                 <div class="fileInput">
                     <p  [ngClass]="{'invalid1': fileError && !fileName1}">{{fileName1 || 'No File Uploaded yet'}}</p>
-                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person1.click()"> 
+                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person1.click()" [disabled]="disableFields"> 
                         <mat-icon>attach_file</mat-icon>
                     </button>
                 </div>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="fileInput">
                     <p [ngClass]="{'invalid2': fileError && !fileName2}">{{fileName2 || 'No File Uploaded yet'}}</p>
-                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person2.click()"> 
+                    <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person2.click()" [disabled]="disableFields"> 
                         <mat-icon>attach_file</mat-icon>
                     </button>
                 </div>              

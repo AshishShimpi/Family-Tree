@@ -64,3 +64,50 @@ body {
     color: rgb(0 0 0 / 80%);
 }
 
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: sandybrown;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+    color: sandybrown;
+}
+
+.mat-input-element {
+    caret-color: sandybrown;
+}
+
+.mat-raised-button.mat-button-disabled.mat-button-disabled, 
+.mat-raised-button.mat-primary.mat-button-disabled,
+.mat-mini-fab.mat-primary.mat-button-disabled, 
+.mat-mini-fab.mat-button-disabled.mat-button-disabled {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.mat-raised-button.mat-primary.mat-button-disabled,
+.mat-raised-button.mat-button-disabled.mat-button-disabled,
+.mat-mini-fab.mat-primary.mat-button-disabled,
+.mat-mini-fab.mat-button-disabled.mat-button-disabled {
+    color: rgba(0, 0, 0, 0.26) !important;
+}
+
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 16px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 16px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
