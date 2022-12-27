@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Store } from '@ngrx/store';
-import { addPerson } from '../state/family/family.actions';
+import { addPerson, addPersonSucess } from '../state/family/family.actions';
 import { AppState } from '../state/app.state';
-
+import { BackendService } from '../services/backend.service';
 @Component({
     selector: 'app-details',
     templateUrl: './details.component.html',
@@ -22,6 +22,7 @@ export class DetailsComponent implements OnInit {
     constructor(
         public dialog: MatDialog,
         private store: Store<AppState>,
+        private backendService: BackendService,
     ) { }
 
     private _details: any = {};
@@ -130,22 +131,23 @@ export class DetailsComponent implements OnInit {
 
 
     onSubmit(form: NgForm) {
-        if (!this.fileName1 || !this.fileName2) {
-            this.fileError = true;
-            this.dialog.open(DialogComponent, {
-                width: '400px',
-                data: { custom: 'Please upload file/s' }
-            });
-        }
-        else if (this.fileName1 === this.fileName2) {
-            console.log('files cannot be same');
-            this.dialog.open(DialogComponent, {
-                width: '400px',
-                data: { custom: 'Files cannot be same' }
-            });
+        // if (!this.fileName1 || !this.fileName2) {
+        //     this.fileError = true;
+        //     this.dialog.open(DialogComponent, {
+        //         width: '400px',
+        //         data: { custom: 'Please upload file/s' }
+        //     });
+        // }
+        // else if (this.fileName1 === this.fileName2) {
+        //     console.log('files cannot be same');
+        //     this.dialog.open(DialogComponent, {
+        //         width: '400px',
+        //         data: { custom: 'Files cannot be same' }
+        //     });
 
-        }
-        else if (!form.valid) {
+        // }
+        // else 
+        if (!form.valid) {
             console.log('form not valid', form);
             this.dialog.open(DialogComponent, {
                 width: '400px',
@@ -164,21 +166,31 @@ export class DetailsComponent implements OnInit {
     }
 
     setDataFromNewPerson() {
+
         this.formData.accountId = this._details.accountId ? this._details.accountId : faker.finance.ethereumAddress();
         this.formData.id = faker.datatype.uuid();
         this.formData.level = this._details.level !== undefined ? (this._details.level + 1) : 0;
         this.formData.parent = this._details.id ? this._details.id : null;
-        // deep clone to change object reference as shallow copy changes with original data mutation & angular won't allow same object as input in component
-        const data = Object.assign({}, this.formData);
 
+        // deep clone to change object reference as shallow copy changes with original data mutation & angular won't allow same object as input in component
+        // const data = Object.assign({}, this.formData);
+        var data = new FormData();
+        for(let [key, value] of Object.entries(this.formData)){
+            data.append(key, value);
+        };
         this.sendNewPersonData(data);
     }
 
     sendNewPersonData(data: any) {
         this.form.resetForm();
-        this._details = null;
-        // this.newPersonData.emit(data);
-        this.store.dispatch(addPerson({ person: data }));
+        this._details = {};
+
+        this.backendService.savePersonData(data).subscribe({
+            next:(res)=>{
+                // this.store.dispatch(addPerson({ person: data }));
+                console.log('data is sent', res);
+            }
+        });
 
     }
 

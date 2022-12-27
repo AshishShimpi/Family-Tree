@@ -1,6 +1,8 @@
+
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { person } from '../models/person.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -70,13 +72,18 @@ export class BackendService {
             image2: undefined
         },
     ]
-    constructor() { }
+    constructor(private http: HttpClient) { }
 
     getFamilyData(): Observable<person[]> {
         
         return new BehaviorSubject(this.dummyTreeData);
     }
-    savePersonData() {
-
+    savePersonData(data: any): Observable<unknown> {
+        return this.http.post('http://localhost:3000/addPerson', data, { responseType: 'json' }).pipe(
+            catchError(err => {
+                console.log('error in savePersonData \n' + err.message);
+                return of();
+            })
+        );
     }
 }

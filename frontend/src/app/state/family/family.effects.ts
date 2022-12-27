@@ -27,6 +27,17 @@ export class FamilyEffects {
                 })
             )
         )
-    ))
-    // savePerson$ = createEffect(() => this.actions$.pipe( ))
+    ));
+
+    savePerson$ = createEffect(() => this.actions$.pipe(
+        ofType(allPersonActions.addPerson),
+        switchMap(action =>
+            this.backendService.savePersonData(action.person).pipe(
+                map(() => allPersonActions.addPersonSucess({ person: action.person })),
+                catchError((error) => {
+                    return of(allPersonActions.addPersonFailure({ error: error }));
+                })
+            )
+        )
+    ));
 }

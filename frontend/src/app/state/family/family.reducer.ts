@@ -5,7 +5,7 @@ import * as allPersonActions from "./family.actions"
 
 export interface familyState {
     person: person[];
-    selectedPerson : person | null; 
+    selectedPerson: person | null;
     error: string | null;
     status: 'pending' | 'loading' | 'success' | 'error';
 }
@@ -20,11 +20,21 @@ export const initialState: familyState = {
 export const familyReducer = createReducer(
     initialState,
 
-    on(allPersonActions.addPerson, (state, { person }) => ({
+    //Person
+    on(allPersonActions.addPerson, (state) => ({ ...state, status: 'loading', })),
+
+    on(allPersonActions.addPersonSucess, (state, { person }) => ({
         ...state,
         person: [...state.person, person]
     })),
 
+    on(allPersonActions.addPersonFailure, (state, { error }) => ({
+        ...state,
+        error: error,
+        status: 'error',
+    })),
+
+    // Family
     on(allPersonActions.loadFamily, (state) => ({ ...state, status: 'loading', })),
 
     on(allPersonActions.loadFamilySucess, (state, { person }) => ({
@@ -37,5 +47,5 @@ export const familyReducer = createReducer(
         ...state,
         error: error,
         status: 'error',
-    }))
-)
+    })),
+);

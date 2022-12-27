@@ -24,6 +24,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { FamilyEffects } from '../app/state/family/family.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -52,6 +53,7 @@ import { environment } from 'src/environments/environment';
             logOnly: environment.production
         }),
         EffectsModule.forRoot([FamilyEffects]),
+        HttpClientModule,
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
