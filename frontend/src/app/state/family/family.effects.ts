@@ -18,10 +18,9 @@ export class FamilyEffects {
 
     loadFamily$ = createEffect(() => this.actions$.pipe(
         ofType(allPersonActions.loadFamily),
-        switchMap(() =>
-            this.backendService.getFamilyData().pipe(
-                // tap(data => console.log('piping async',data)),
-                map((data) => allPersonActions.loadFamilySucess({ person: data })),
+        switchMap(action =>
+            this.backendService.getFamilyData(action.id).pipe(
+                map((data:any) => allPersonActions.loadFamilySucess({ person: data })),
                 catchError((error) => {
                     return of(allPersonActions.loadFamilyFailure({ error: error }));
                 })
@@ -29,15 +28,15 @@ export class FamilyEffects {
         )
     ));
 
-    savePerson$ = createEffect(() => this.actions$.pipe(
-        ofType(allPersonActions.addPerson),
-        switchMap(action =>
-            this.backendService.savePersonData(action.person).pipe(
-                map(() => allPersonActions.addPersonSucess({ person: action.person })),
-                catchError((error) => {
-                    return of(allPersonActions.addPersonFailure({ error: error }));
-                })
-            )
-        )
-    ));
+    // savePerson$ = createEffect(() => this.actions$.pipe(
+    //     ofType(allPersonActions.addPerson),
+    //     switchMap(action =>
+    //         this.backendService.savePersonData(action.person).pipe(
+    //             map(() => allPersonActions.addPersonSuccess({ person: action.person })),
+    //             catchError((error) => {
+    //                 return of(allPersonActions.addPersonFailure({ error: error }));
+    //             })
+    //         )
+    //     )
+    // ));
 }

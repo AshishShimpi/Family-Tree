@@ -5,6 +5,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Store } from '@ngrx/store';
 import { selectAllPersons } from '../state/family/family.selectors';
 import { AppState } from '../state/app.state';
+import { loadFamily } from '../state/family/family.actions';
 
 interface TreeNode {
     name: string,
@@ -40,20 +41,18 @@ export class TreeComponent implements OnInit {
 
     ngOnInit(): void {
         this.getFamilyTree();
-        // this.store.dispatch(loadFamily());
-    }
 
-    // ngAfterViewInit() {
-        // this.expandTree();
-    // }
+        this.store.dispatch(loadFamily({ id: localStorage.getItem('account_id') }));
+    }
 
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
 
     getFamilyTree() {
         this.store.select(selectAllPersons).subscribe({
             next: (res) => {
-                if(res.length){
+                if (res.length) {
                     this.familyData = [...res];
+
                     this.prepareTree();
                     setTimeout(() => {
                         this.expandTree();
@@ -100,7 +99,7 @@ export class TreeComponent implements OnInit {
         });
 
         for (let i = this.treeData.length - 1; i >= 0; i--) {
-            if (this.treeData[i].parent === null) {
+            if (this.treeData[i].parent === 'null') {
                 this.dataSource.data = [this.treeData[i]];
                 this.track(this.treeData[i]);
             }
@@ -111,13 +110,18 @@ export class TreeComponent implements OnInit {
 
 
     track(data?: any) {
-        if(data){
+        if (data) {
             this.selectedPerson = data?.id;
             let parentI = this.familyData.findIndex((person) => {
                 return data.id === person.id;
             });
             // deep clone to change object reference as angular won't allow same object as input in component
-            this.details.emit(Object.assign({}, this.familyData[parentI]));
+            let newObj: any = {};
+            for (let [key, value] of Object.entries(this.familyData[parentI])) {
+                newObj[key] = value;
+            }
+            // this.details.emit(Object.assign({}, this.familyData[parentI]));
+            this.details.emit(newObj);
         }
     }
 

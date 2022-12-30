@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { person } from '../models/person.model';
+import { faker } from '@faker-js/faker';
 
 @Component({
     selector: 'app-homepage',
@@ -8,12 +9,16 @@ import { person } from '../models/person.model';
 })
 export class HomepageComponent implements OnInit {
 
-    constructor() {
 
-    }
     inputPersonData: any = null;
     details: any = null;
     
+    constructor() {
+        if(localStorage.getItem('account_id') === null){
+            localStorage.setItem('account_id', faker.finance.ethereumAddress()) ;
+        }
+        
+    }
     ngOnInit(): void {
     }
 

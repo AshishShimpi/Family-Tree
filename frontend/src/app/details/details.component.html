@@ -10,37 +10,37 @@
 
         <mat-form-field >
             <mat-label>Name</mat-label>
-            <input type="text" name="name" [(ngModel)]="formData.name" matInput placeholder="ex. Grandfather"  [disabled]="disableFields"
-            >
-            <mat-error >Name is required</mat-error>
+            <input type="text" name="name" [(ngModel)]="formData.name" matInput placeholder="ex. Grandfather"  [disabled]="disableFields"  >
+
+            <mat-error >Name is  </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>spouse</mat-label>
-            <input type="text" name="spouse" [(ngModel)]="formData.spouse" matInput placeholder="ex. Judy"  [disabled]="disableFields">
-            <mat-error>Spouse name is required</mat-error>
+            <input type="text" name="spouse" [(ngModel)]="formData.spouse" matInput placeholder="ex. Judy"  [disabled]="disableFields"  >
+            <mat-error>Spouse name is  </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Location</mat-label>
-            <input type="text" name="location" [(ngModel)]="formData.location" matInput placeholder="ex. Kolkata"  [disabled]="disableFields">
-            <mat-error>Location is required</mat-error>
+            <input type="text" name="location" [(ngModel)]="formData.location" matInput placeholder="ex. Kolkata"  [disabled]="disableFields"  >
+            <mat-error>Location is  </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Birth Date</mat-label>
             <input type="text" name="dob" [(ngModel)]="formData.dob" matInput 
-                [matDatepicker]="picker"  [disabled]="disableFields">
+                [matDatepicker]="picker"  [disabled]="disableFields" >
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker [xPosition]="'end'" #picker></mat-datepicker>
-            <mat-error>Birth Date is required</mat-error>
+            <mat-error>Birth Date is  </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Address</mat-label>
-            <input type="text" name="address" [(ngModel)]="formData.address" matInput placeholder="ex. street, area, state, country."  [disabled]="disableFields">
-            <mat-error>Address is required</mat-error>
+            <input type="text" name="address" [(ngModel)]="formData.address" matInput placeholder="ex. street, area, state, country."  [disabled]="disableFields"  >
+            <mat-error>Address is  </mat-error>
         </mat-form-field>
 
         <div class="photos">
@@ -53,21 +53,21 @@
             <div class="fileUpload">
                 <div class="input">
                     <input type="file" name="person-1" id="person-1" accept="image/*" 
-                (change)="onFileUploadChange($event, 1)" #person1  [disabled]="disableFields" >
+                (change)="onFileUploadChange($event, 1)" #person1  [disabled]="disableFields"  >
 
                 </div>
                 <div class="fileInput">
-                    <p  [ngClass]="{'invalid1': fileError && !fileName1}">{{fileName1 || 'No File Uploaded yet'}}</p>
+                    <p  [ngClass]="{'invalid1': fileError && !fileName1}">Image 1</p>
                     <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person1.click()" [disabled]="disableFields"> 
                         <mat-icon>attach_file</mat-icon>
                     </button>
                 </div>
                 <div class="input">
                     <input type="file" name="person-2" id="person-2" accept="image/*"
-                (change)="onFileUploadChange($event, 2)" #person2  [disabled]="disableFields" >
+                (change)="onFileUploadChange($event, 2)" #person2  [disabled]="disableFields"  >
                 </div>
                 <div class="fileInput">
-                    <p [ngClass]="{'invalid2': fileError && !fileName2}">{{fileName2 || 'No File Uploaded yet'}}</p>
+                    <p [ngClass]="{'invalid2': fileError && !fileName2}">Image 2</p>
                     <button type="button" mat-mini-fab class="uploadButton" color="primary" (click)="person2.click()" [disabled]="disableFields"> 
                         <mat-icon>attach_file</mat-icon>
                     </button>

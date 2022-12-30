@@ -2,11 +2,11 @@ import { createAction, props } from '@ngrx/store';
 import { person } from 'src/app/models/person.model';
 
 export const addPerson = createAction(
-    '[ Details ] adding Person',
-    props<{ person: person }>());
+    '[ Details ] adding Person'
+);
 
-export const addPersonSucess = createAction(
-    '[ Details ] add Person Sucess',
+export const addPersonSuccess = createAction(
+    '[ Details ] add Person Success',
     props<{ person: person }>()
 );
 
@@ -15,7 +15,10 @@ export const addPersonFailure = createAction(
     props<{ error: string }>()
 );
 
-export const loadFamily = createAction('[ Tree ] load family');
+export const loadFamily = createAction(
+    '[ Tree ] load family',
+    props<{ id: string | null}>()
+);
 
 export const loadFamilySucess = createAction(
     '[ Tree ] load family success',

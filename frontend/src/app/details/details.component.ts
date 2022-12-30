@@ -6,9 +6,10 @@ import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Store } from '@ngrx/store';
-import { addPerson, addPersonSucess } from '../state/family/family.actions';
+import { addPerson, addPersonSuccess, addPersonFailure } from '../state/family/family.actions';
 import { AppState } from '../state/app.state';
 import { BackendService } from '../services/backend.service';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
     selector: 'app-details',
     templateUrl: './details.component.html',
@@ -26,7 +27,7 @@ export class DetailsComponent implements OnInit {
     ) { }
 
     private _details: any = {};
-
+    loader: boolean = false;
     imgURL1?: string;
     imgURL2?: string;
     disableAddButton: boolean = true;
@@ -36,7 +37,7 @@ export class DetailsComponent implements OnInit {
         id: '',
         level: -1,
         parent: null,
-        name: '',
+        name: 'asdfds',
         spouse: '',
         location: '',
         dob: '',
@@ -57,7 +58,7 @@ export class DetailsComponent implements OnInit {
             this.disableAddButton = true;
             this.setDataFromTree();
         }
-        
+
     }
 
     get details() {
@@ -69,6 +70,7 @@ export class DetailsComponent implements OnInit {
 
     setDataFromTree() {
 
+        this.formData.accountId = this._details.account_id;
         this.formData.name = this._details.name;
         this.formData.spouse = this._details.spouse;
         this.formData.location = this._details.location;
@@ -77,19 +79,23 @@ export class DetailsComponent implements OnInit {
         this.formData.image1 = this._details.image1;
         this.formData.image2 = this._details.image2;
 
-        this.fileName1 = this._details.image1.name;
-        this.fileName2 = this._details.image2.name;
-        
-        
-        this.parseFile(this._details.image1).subscribe({
-            next: (res) => this.imgURL1 = res,
-            error: (err) => console.log('Error in reading file', err)
-        });
+        if (typeof (this._details.image1) !== 'string') {
 
-        this.parseFile(this._details.image2).subscribe({
-            next: (res) => this.imgURL2 = res,
-            error: (err) => console.log('Error in reading file', err)
-        });
+            this.parseFile(this._details.image1).subscribe({
+                next: (res) => this.imgURL1 = res,
+                error: (err) => console.log('Error in reading file', err)
+            });
+
+            this.parseFile(this._details.image2).subscribe({
+                next: (res) => this.imgURL2 = res,
+                error: (err) => console.log('Error in reading file', err)
+            });
+
+        } else {
+
+            this.imgURL1 = this._details.image1;
+            this.imgURL2 = this._details.image2;
+        }
 
     }
 
@@ -97,7 +103,9 @@ export class DetailsComponent implements OnInit {
         this.fileError = false;
         const file: File = event.target.files[0];
 
-        if (file && file.type && !file.type.startsWith('image/')) {
+
+        if (file && file.type && (file.type === 'image/vnd.microsoft.icon' || !file.type.startsWith('image/'))) {
+
             if (person === 1) {
                 [this.fileName1, this.imgURL1, this.formData.image1] = [undefined, undefined, undefined];
 
@@ -109,7 +117,7 @@ export class DetailsComponent implements OnInit {
         } else if (file) {
 
             if (person === 1) {
-                this.fileName1 = file.name;
+                this.fileName1 = 'file1';
                 this.formData.image1 = file;
                 this.parseFile(file).subscribe({
                     next: (res) => this.imgURL1 = res,
@@ -117,7 +125,7 @@ export class DetailsComponent implements OnInit {
                 })
 
             } else {
-                this.fileName2 = file.name;
+                this.fileName2 = 'file2';
                 this.formData.image2 = file;
                 this.parseFile(file).subscribe({
                     next: (res) => this.imgURL2 = res,
@@ -131,28 +139,28 @@ export class DetailsComponent implements OnInit {
 
 
     onSubmit(form: NgForm) {
-        // if (!this.fileName1 || !this.fileName2) {
-        //     this.fileError = true;
-        //     this.dialog.open(DialogComponent, {
-        //         width: '400px',
-        //         data: { custom: 'Please upload file/s' }
-        //     });
-        // }
-        // else if (this.fileName1 === this.fileName2) {
-        //     console.log('files cannot be same');
-        //     this.dialog.open(DialogComponent, {
-        //         width: '400px',
-        //         data: { custom: 'Files cannot be same' }
-        //     });
 
-        // }
-        // else 
         if (!form.valid) {
             console.log('form not valid', form);
             this.dialog.open(DialogComponent, {
                 width: '400px',
                 data: { custom: 'Fields cannot be empty' }
             });
+        }
+        else if (!this.fileName1 || !this.fileName2) {
+            this.fileError = true;
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Please upload file/s' }
+            });
+        }
+        else if (this.fileName1 === this.fileName2) {
+            console.log('files cannot be same');
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Files cannot be same' }
+            });
+
         }
         else {
             this.imgURL1 = undefined;
@@ -167,31 +175,52 @@ export class DetailsComponent implements OnInit {
 
     setDataFromNewPerson() {
 
-        this.formData.accountId = this._details.accountId ? this._details.accountId : faker.finance.ethereumAddress();
-        this.formData.id = faker.datatype.uuid();
+        if (!this.formData.accountId)
+            this.formData.accountId = localStorage.getItem('account_id');
+        this.formData.id = uuidv4();
         this.formData.level = this._details.level !== undefined ? (this._details.level + 1) : 0;
-        this.formData.parent = this._details.id ? this._details.id : null;
+        this.formData.parent = this._details.id ? this._details.id : 'null';
+        this.formData.dob = new Date(this.formData.dob).toISOString();
 
         // deep clone to change object reference as shallow copy changes with original data mutation & angular won't allow same object as input in component
         // const data = Object.assign({}, this.formData);
-        var data = new FormData();
-        for(let [key, value] of Object.entries(this.formData)){
-            data.append(key, value);
+        var newForm = new FormData();
+        var newFormObj: any = {};
+        for (let [key, value] of Object.entries(this.formData)) {
+            newForm.append(key, value);
+            newFormObj[key] = value;
         };
-        this.sendNewPersonData(data);
+
+        this.sendNewPersonData(newForm, newFormObj);
     }
 
-    sendNewPersonData(data: any) {
+    sendNewPersonData(newForm: any, newFormObj: person) {
         this.form.resetForm();
         this._details = {};
+        this.loader = true;
+        this.store.dispatch(addPerson());
 
-        this.backendService.savePersonData(data).subscribe({
-            next:(res)=>{
-                // this.store.dispatch(addPerson({ person: data }));
+        this.backendService.savePersonData(newForm).subscribe({
+            next: (res) => {
+
+                this.store.dispatch(addPersonSuccess({ person: newFormObj }));
+                this.dialog.open(DialogComponent, {
+                    width: '400px',
+                    data: { heading: 'Success', custom: ' Member added to family tree.' }
+                });
+                this.loader = false;
                 console.log('data is sent', res);
+            },
+            error: (err) => {
+                this.store.dispatch(addPersonFailure({ error: 'Failure to add Person' }));
+                this.dialog.open(DialogComponent, {
+                    width: '400px',
+                    data: { heading: 'Error', custom: 'Unable To add Member. Please try again later' }
+                });
+                this.loader = false;
+                console.log(err);
             }
         });
-
     }
 
     parseFile(file: File): Observable<any> {

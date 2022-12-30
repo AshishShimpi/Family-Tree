@@ -1,5 +1,5 @@
 export interface person {
-    accountId: number | null,
+    accountId: string | null,
     id: string | null,
     level: number,
     name: string;
@@ -8,7 +8,7 @@ export interface person {
     dob: string,
     address: string,
     parent: string | null,
-    image1?: File,
-    image2?: File,
+    image1?: File | string,
+    image2?: File | string,
 
 }

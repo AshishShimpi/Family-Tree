@@ -21,11 +21,13 @@ export const familyReducer = createReducer(
     initialState,
 
     //Person
-    on(allPersonActions.addPerson, (state) => ({ ...state, status: 'loading', })),
+    on(allPersonActions.addPerson, (state) => ({ ...state, status: 'pending', })),
 
-    on(allPersonActions.addPersonSucess, (state, { person }) => ({
+    on(allPersonActions.addPersonSuccess, (state, { person }) => ({
         ...state,
-        person: [...state.person, person]
+        person: [...state.person, person],
+        error: null,
+        status: 'success',
     })),
 
     on(allPersonActions.addPersonFailure, (state, { error }) => ({
