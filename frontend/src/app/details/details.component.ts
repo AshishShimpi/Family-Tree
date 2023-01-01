@@ -102,9 +102,16 @@ export class DetailsComponent implements OnInit {
     onFileUploadChange(event: any, person: number) {
         this.fileError = false;
         const file: File = event.target.files[0];
-
-
-        if (file && file.type && (file.type === 'image/vnd.microsoft.icon' || !file.type.startsWith('image/'))) {
+        console.log(file);
+        
+        var allowedExtensions = /(\/jpg|\/jpeg|\/png)$/i;
+        if (file && !allowedExtensions.exec(file.type)) {
+            this.dialog.open(DialogComponent, {
+                width: '400px',
+                data: { custom: 'Only jpeg/png file allowed' }
+            });
+        }
+        else if (file && file.type && !file.type.startsWith('image/')) {
 
             if (person === 1) {
                 [this.fileName1, this.imgURL1, this.formData.image1] = [undefined, undefined, undefined];

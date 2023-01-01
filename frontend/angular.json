@@ -18,7 +18,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-                "moment"
+                "moment",
+                "pdfmake"
             ],
             "outputPath": "dist/frontend",
             "index": "src/index.html",

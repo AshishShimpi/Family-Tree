@@ -6,6 +6,7 @@
     margin: 10px;
     border: 1px solid rgb(39, 39, 39);
     background-color: beige;
+    position: relative;
 
     .heading {
         text-align: center;
@@ -24,6 +25,22 @@
             h4 {
                 margin-left: 10px;
             }
+        }
+    }
+
+    .buttons {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+        padding: 12px 0 20px 0;
+
+        button {
+            width: 149px;
+            color: black;
+            background: sandybrown;
         }
     }
 }
@@ -51,42 +68,45 @@
    * Leaf nodes need to have padding so as to align with other non-leaf nodes
    * under the same parent.
    */
-.example-tree div[role=group]>.mat-tree-node, mat-tree-node {
+.example-tree div[role=group]>.mat-tree-node,
+mat-tree-node {
     padding-left: 20px;
 }
+
 .mat-tree {
     background: transparent;
 }
-.mat-tree-node{
+
+.mat-tree-node {
     border-radius: 8px;
     margin: 8px 0;
 }
-.mat-tree-node.selected{
+
+.mat-tree-node.selected {
     color: black;
     background-color: sandybrown;
     box-shadow: 0px 0px 4px 4px rgb(0 0 0 / 32%);
 }
 
-.mat-tree-node:hover{
+.mat-tree-node:hover {
     cursor: pointer;
 }
 
-.mat-tree-node h3{
+.mat-tree-node h3 {
     width: 100%;
     margin: 8px 0;
 }
 
-.mat-icon-button{
+.mat-icon-button {
     width: 32px;
-    margin:0 2px;
+    margin: 0 2px;
 }
 
-.mat-icon-button:hover{
+.mat-icon-button:hover {
     background-color: hwb(28deg 60% 0% / 52%);
 }
 
-mat-nested-tree-node button{
+mat-nested-tree-node button {
     position: relative;
     z-index: 1000;
 }
-

@@ -7,6 +7,11 @@ import { selectAllPersons } from '../state/family/family.selectors';
 import { AppState } from '../state/app.state';
 import { loadFamily } from '../state/family/family.actions';
 
+import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
+(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+
 interface TreeNode {
     name: string,
     id: string | null,
@@ -35,10 +40,12 @@ export class TreeComponent implements OnInit {
 
     disableToggle: boolean = false;
     selectedPerson: string = '';
+    
     familyData: person[] = [];
-
+    
     treeData: TreeNode[] = [];
-
+    
+    pdfTree: any[] = [];
     ngOnInit(): void {
         this.getFamilyTree();
 
@@ -131,5 +138,157 @@ export class TreeComponent implements OnInit {
             ele?.click();
         });
     }
+
+    // PDF Generation Logic
+    generateTree() {
+        let queue = [];
+        queue.push(this.treeData[this.treeData.length - 1]);
+
+        while (queue.length !== 0) {
+
+            let child = [];
+            let temp: any = queue.shift();
+            let memberData = this.familyData.find((element: any) => {
+                return element.id === temp.id;
+            });
+            console.log(memberData);
+
+            if (temp.children.length !== 0) {
+
+                for (let i = 0; i < temp.children.length; i++) {
+                    child.push(temp.children[i].name);
+                    queue.push(temp.children[i]);
+                }
+
+            }
+            this.pdfTree.push({ ...memberData, children: child });
+        }
+        console.log(this.pdfTree);
+        this.GeneratePdf();
+    }
+
+    async GeneratePdf() {
+
+        var contents = [];
+        var allImages: any = {};
+        var count: number = 0;
+
+        for (let member of this.pdfTree) {
+            contents.push({
+                text: member.name + ' :',
+                style: 'master'
+            });
+            contents.push({
+                text: 'Spouse   -  ' + member.spouse,
+                style: 'slave'
+            });
+            contents.push({
+                text: 'Location -  ' + member.location,
+                style: 'slave'
+            });
+            contents.push({
+                text: 'DOB         -  ' + member.dob,
+                style: 'slave'
+            });
+            contents.push({
+                text: 'Address  -  ' + member.address,
+                style: 'slave'
+            });
+
+            count++;
+            allImages['i' + count] = member.image1 + '?h=200&fit=clip';
+
+            count++;
+            allImages['i' + count] = member.image2 + '?h=200&fit=clip';
+
+            contents.push({
+                columns: [
+                    {
+                        image: 'i' + (count-1),
+                        width: 100,
+                        height: 100,
+                        margin: [10, 5, 0, 5]
+                    },
+                    {
+                        image: 'i' + count,
+                        width: 100,
+                        height: 100,
+                        margin: [40, 5, 0, 5]
+                    },
+                ]
+            })
+
+            if (member.children.length > 0) {
+                let list: any = {
+                    ol: []
+                }
+                contents.push({
+                    text: 'Children :',
+                    bold: true,
+                    margin: [8, 5, 0, 5]
+                });
+                member.children.forEach((e: any) => {
+                    list.ol.push({
+                        text: e,
+                        margin: [35, 0, 0, 5]
+                    });
+                });
+                contents.push(list);
+            }
+            contents.push({
+                text: '_______________________________________________________________________________________',
+                color: 'black',
+                alignment: 'left',
+                margin: [0, 5, 0, 5]
+            });
+        }
+        console.log(contents);
+
+        let docDefinition: any = {
+            info: {
+                title: 'My-Family-Tree',
+                author: 'Ashish Shimpi',
+                subject:'Assignment Family Tree ',
+                keywords:'tree,assignment'
+              },
+            pageSize: 'A4',
+            pageOrientation: 'portrait',
+            pageMargins: [40, 40, 40, 40],
+
+            content: [
+                {
+                    text: 'Family Tree',
+                    fontSize: 22,
+                    alignment: 'center',
+                    color: 'green',
+                    margin: [0, 0, 0, 20]
+                },
+                ...contents
+
+            ],
+            styles: {
+                master: {
+                    fontSize: 16,
+                    bold: true,
+                    // color: 'chocolate',
+                    italics: true,
+                    margin: [0, 0, 0, 5]
+                },
+                slave: {
+                    fontSize: 12,
+                    // bold: true,
+                    // color: 'coral',
+                    lineHeight: 1.3,
+                    margin: [25, 0, 0, 0]
+                }
+            },
+            images: {
+                ...allImages
+            },
+            columnGap: 10
+        };
+        pdfMake.createPdf(docDefinition).open();
+    }
+
 
 }
