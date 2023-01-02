@@ -41,7 +41,6 @@ app.get('/getFamily', (req, res) => {
         .sort({ level: -1 })
         .toArray()
         .then(resp => {
-            console.log('from Mongo \n', resp);
             res.status(200).json(resp);
         })
         .catch(err => {
@@ -51,7 +50,7 @@ app.get('/getFamily', (req, res) => {
 });
 
 
-app.post('/addPerson', upload.any(), (req, res) => addPerson(req, res) );
+app.post('/addPerson', upload.any(), (req, res) => addPerson(req, res));
 
 
 async function addPerson(req, res) {
@@ -64,12 +63,12 @@ async function addPerson(req, res) {
 
     try {
         let image1 = await client.assets.upload('image', req.files[0].buffer);
-        console.log('The image1 was uploaded!', image1);
+        
         image1Id = await image1._id;
         image1URL = await image1.url;
 
         let image2 = await client.assets.upload('image', req.files[1].buffer);
-        console.log('The image2 was uploaded!', image2);
+        
         image2Id = await image2._id;
         image2URL = await image2.url;
 
@@ -89,8 +88,11 @@ async function addPerson(req, res) {
             image2: await image2URL,
         };
         await db.collection("Persons").insertOne(personObject);
-        
-        res.status(201).send('Document added');
+
+        res.status(201).json({
+            image1: image1URL,
+            image2: image2URL,
+        });
 
     } catch (error) {
         console.error('AddPerson api failed:', error);
@@ -98,7 +100,7 @@ async function addPerson(req, res) {
     }
 }
 
-process.on('unhandledRejection', (err) => { 
+process.on('unhandledRejection', (err) => {
     console.error(err);
     process.exit(1);
 })

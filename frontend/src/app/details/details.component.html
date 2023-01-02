@@ -10,37 +10,37 @@
 
         <mat-form-field >
             <mat-label>Name</mat-label>
-            <input type="text" name="name" [(ngModel)]="formData.name" matInput placeholder="ex. Grandfather"  [disabled]="disableFields"  >
+            <input type="text" name="name" [(ngModel)]="formData.name" matInput placeholder="ex. Grandfather"  [disabled]="disableFields"  required>
 
-            <mat-error >Name is  </mat-error>
+            <mat-error >Name is Required</mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>spouse</mat-label>
-            <input type="text" name="spouse" [(ngModel)]="formData.spouse" matInput placeholder="ex. Judy"  [disabled]="disableFields"  >
-            <mat-error>Spouse name is  </mat-error>
+            <input type="text" name="spouse" [(ngModel)]="formData.spouse" matInput placeholder="ex. Judy"  [disabled]="disableFields"  required>
+            <mat-error>Spouse name is Required</mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Location</mat-label>
-            <input type="text" name="location" [(ngModel)]="formData.location" matInput placeholder="ex. Kolkata"  [disabled]="disableFields"  >
-            <mat-error>Location is  </mat-error>
+            <input type="text" name="location" [(ngModel)]="formData.location" matInput placeholder="ex. Kolkata"  [disabled]="disableFields"  required>
+            <mat-error>Location is Required</mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Birth Date</mat-label>
             <input type="text" name="dob" [(ngModel)]="formData.dob" matInput 
-                [matDatepicker]="picker"  [disabled]="disableFields" >
+                [matDatepicker]="picker"  [disabled]="disableFields" required>
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker [xPosition]="'end'" #picker></mat-datepicker>
-            <mat-error>Birth Date is  </mat-error>
+            <mat-error>Birth Date Format Wrong</mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Address</mat-label>
-            <input type="text" name="address" [(ngModel)]="formData.address" matInput placeholder="ex. street, area, state, country."  [disabled]="disableFields"  >
-            <mat-error>Address is  </mat-error>
+            <input type="text" name="address" [(ngModel)]="formData.address" matInput placeholder="ex. street, area, state, country."  [disabled]="disableFields"  required>
+            <mat-error>Address is Required</mat-error>
         </mat-form-field>
 
         <div class="photos">
@@ -53,7 +53,7 @@
             <div class="fileUpload">
                 <div class="input">
                     <input type="file" name="person-1" id="person-1" accept="image/*" 
-                (change)="onFileUploadChange($event, 1)" #person1  [disabled]="disableFields"  >
+                (change)="onFileUploadChange($event, 1)" #person1  [disabled]="disableFields"  required>
 
                 </div>
                 <div class="fileInput">
@@ -64,7 +64,7 @@
                 </div>
                 <div class="input">
                     <input type="file" name="person-2" id="person-2" accept="image/*"
-                (change)="onFileUploadChange($event, 2)" #person2  [disabled]="disableFields"  >
+                (change)="onFileUploadChange($event, 2)" #person2  [disabled]="disableFields"  required>
                 </div>
                 <div class="fileInput">
                     <p [ngClass]="{'invalid2': fileError && !fileName2}">Image 2</p>

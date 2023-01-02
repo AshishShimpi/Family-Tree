@@ -25,6 +25,8 @@ import { FamilyEffects } from '../app/state/family/family.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 
 @NgModule({
     declarations: [
@@ -54,6 +56,7 @@ import { HttpClientModule } from '@angular/common/http';
         }),
         EffectsModule.forRoot([FamilyEffects]),
         HttpClientModule,
+        MatProgressSpinnerModule,
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { person } from '../models/person.model';
-import { faker } from '@faker-js/faker';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -79,31 +78,17 @@ export class DetailsComponent implements OnInit {
         this.formData.image1 = this._details.image1;
         this.formData.image2 = this._details.image2;
 
-        if (typeof (this._details.image1) !== 'string') {
-
-            this.parseFile(this._details.image1).subscribe({
-                next: (res) => this.imgURL1 = res,
-                error: (err) => console.log('Error in reading file', err)
-            });
-
-            this.parseFile(this._details.image2).subscribe({
-                next: (res) => this.imgURL2 = res,
-                error: (err) => console.log('Error in reading file', err)
-            });
-
-        } else {
 
             this.imgURL1 = this._details.image1;
             this.imgURL2 = this._details.image2;
-        }
 
     }
 
     onFileUploadChange(event: any, person: number) {
+
         this.fileError = false;
         const file: File = event.target.files[0];
-        console.log(file);
-        
+
         var allowedExtensions = /(\/jpg|\/jpeg|\/png)$/i;
         if (file && !allowedExtensions.exec(file.type)) {
             this.dialog.open(DialogComponent, {
@@ -118,7 +103,6 @@ export class DetailsComponent implements OnInit {
 
             } else {
                 [this.fileName2, this.imgURL2, this.formData.image2] = [undefined, undefined, undefined];
-
             }
 
         } else if (file) {
@@ -138,17 +122,15 @@ export class DetailsComponent implements OnInit {
                     next: (res) => this.imgURL2 = res,
                     error: (err) => console.log('Error in reading file', err)
                 })
-
             }
         }
-
     }
 
 
     onSubmit(form: NgForm) {
 
         if (!form.valid) {
-            console.log('form not valid', form);
+
             this.dialog.open(DialogComponent, {
                 width: '400px',
                 data: { custom: 'Fields cannot be empty' }
@@ -162,7 +144,7 @@ export class DetailsComponent implements OnInit {
             });
         }
         else if (this.fileName1 === this.fileName2) {
-            console.log('files cannot be same');
+
             this.dialog.open(DialogComponent, {
                 width: '400px',
                 data: { custom: 'Files cannot be same' }
@@ -202,35 +184,44 @@ export class DetailsComponent implements OnInit {
     }
 
     sendNewPersonData(newForm: any, newFormObj: person) {
+
         this.form.resetForm();
         this._details = {};
         this.loader = true;
         this.store.dispatch(addPerson());
-
-        this.backendService.savePersonData(newForm).subscribe({
-            next: (res) => {
-
+        this.backendService.savePersonData(newForm).subscribe(
+            {
+            next: (res: any) => {
+                
+                newFormObj.image1 = res.image1;
+                newFormObj.image2 = res.image2;
                 this.store.dispatch(addPersonSuccess({ person: newFormObj }));
                 this.dialog.open(DialogComponent, {
                     width: '400px',
                     data: { heading: 'Success', custom: ' Member added to family tree.' }
                 });
-                this.loader = false;
-                console.log('data is sent', res);
+                this.backendService.loader.next({
+                    showLoader: false, message: ''
+                });
             },
+
             error: (err) => {
+
                 this.store.dispatch(addPersonFailure({ error: 'Failure to add Person' }));
                 this.dialog.open(DialogComponent, {
                     width: '400px',
-                    data: { heading: 'Error', custom: 'Unable To add Member. Please try again later' }
+                    data: { heading: 'Error', custom: 'Unable To add Member. Please try again.' }
+                });
+                this.backendService.loader.next({
+                    showLoader: false, message: ''
                 });
                 this.loader = false;
-                console.log(err);
             }
         });
     }
 
     parseFile(file: File): Observable<any> {
+
         return new Observable((observer) => {
             const reader = new FileReader();
 
@@ -241,6 +232,7 @@ export class DetailsComponent implements OnInit {
     }
 
     resetForm() {
+
         this.form.reset();
         this.imgURL1 = undefined;
         this.imgURL2 = undefined;

@@ -38,9 +38,9 @@ export class TreeComponent implements OnInit {
     }
 
 
-    disableToggle: boolean = false;
+    disableToggle: boolean = true;
     selectedPerson: string = '';
-    
+    currentSelected: any;
     familyData: person[] = [];
     
     treeData: TreeNode[] = [];
@@ -68,7 +68,7 @@ export class TreeComponent implements OnInit {
 
             },
             error: (err) => {
-                console.log('Error in tree comp-getAllData\n', err);
+                console.log(err);
             }
         })
     }
@@ -111,13 +111,14 @@ export class TreeComponent implements OnInit {
                 this.track(this.treeData[i]);
             }
         }
-
+        this.disableToggle = false;
         // this.treeControl.expansionModel.setSelection(...this.treeData);
     }
 
 
     track(data?: any) {
         if (data) {
+            this.currentSelected = data;
             this.selectedPerson = data?.id;
             let parentI = this.familyData.findIndex((person) => {
                 return data.id === person.id;
@@ -141,8 +142,10 @@ export class TreeComponent implements OnInit {
 
     // PDF Generation Logic
     generateTree() {
+        this.disableToggle = true;
         let queue = [];
-        queue.push(this.treeData[this.treeData.length - 1]);
+        this.pdfTree = [];
+        queue.push(this.currentSelected);
 
         while (queue.length !== 0) {
 
@@ -151,7 +154,6 @@ export class TreeComponent implements OnInit {
             let memberData = this.familyData.find((element: any) => {
                 return element.id === temp.id;
             });
-            console.log(memberData);
 
             if (temp.children.length !== 0) {
 
@@ -163,7 +165,6 @@ export class TreeComponent implements OnInit {
             }
             this.pdfTree.push({ ...memberData, children: child });
         }
-        console.log(this.pdfTree);
         this.GeneratePdf();
     }
 
@@ -187,7 +188,7 @@ export class TreeComponent implements OnInit {
                 style: 'slave'
             });
             contents.push({
-                text: 'DOB         -  ' + member.dob,
+                text: 'DOB         -  ' + new Date(member.dob).toDateString(),
                 style: 'slave'
             });
             contents.push({
@@ -242,7 +243,6 @@ export class TreeComponent implements OnInit {
                 margin: [0, 5, 0, 5]
             });
         }
-        console.log(contents);
 
         let docDefinition: any = {
             info: {
@@ -287,6 +287,7 @@ export class TreeComponent implements OnInit {
             },
             columnGap: 10
         };
+        this.disableToggle = false;
         pdfMake.createPdf(docDefinition).open();
     }
 

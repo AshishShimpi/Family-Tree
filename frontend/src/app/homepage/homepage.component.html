@@ -1,9 +1,13 @@
 
-<div class="container">
+<div class="container" >
     <div class="tree" >
         <app-tree  (details)="setDetails($event)"></app-tree>
     </div>
     <div class="details">
         <app-details [details]="details"></app-details>
     </div>
+</div>
+<div class="loader" *ngIf="loader">
+    <mat-spinner></mat-spinner>
+    <h4>{{message}}</h4>
 </div>

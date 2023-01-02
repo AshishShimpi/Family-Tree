@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from "@ngrx/store";
-import { person } from "src/app/models/person.model";
+import { person } from "../../../app/models/person.model";
 import * as allPersonActions from "./family.actions"
 
 

@@ -17,7 +17,7 @@ const targetPath = isProd
 const environmentFileContent = `
     export const environment = {
         production: ${isProd},
-        weatherBaseUrl: "${process.env['BACKEND_URL']}",
+        BACKEND_URL: "${process.env['BACKEND_URL']}",
         
     };
 `;
