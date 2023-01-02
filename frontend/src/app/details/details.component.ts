@@ -36,7 +36,7 @@ export class DetailsComponent implements OnInit {
         id: '',
         level: -1,
         parent: null,
-        name: 'asdfds',
+        name: '',
         spouse: '',
         location: '',
         dob: '',
