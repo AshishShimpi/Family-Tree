@@ -4,7 +4,6 @@ const multer = require('multer');
 const cors = require('cors');
 const client = require('./sanity');
 const { getDB, connectToDB } = require('./db');
-const fs = require('node:fs');
 
 require('dotenv').config();
 
