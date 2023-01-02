@@ -6,6 +6,8 @@ const client = require('./sanity');
 const { getDB, connectToDB } = require('./db');
 const fs = require('node:fs');
 
+require('dotenv').config();
+
 const app = express();
 const port = 3111;
 const upload = multer();
@@ -17,7 +19,7 @@ app.use(express.urlencoded({
 }));
 app.use(
     cors({
-        origin: 'http://localhost:4200'
+        origin: process.env.FRONTEND_URL 
     })
 );
 
